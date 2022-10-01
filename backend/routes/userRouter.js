@@ -1,12 +1,13 @@
 import User from "../model/userModel.js";
 import bcrypt from 'bcryptjs';
 import express from 'express';
+import expressAsyncHandler from 'express-async-handler';
 import emailValidator from 'email-validator';
 import { generateToken } from "../utils/utils.js";
 
 const userRouter = express.Router();
 
-userRouter.post('/register', async (req,res) => {
+userRouter.post('/register', expressAsyncHandler(async (req,res) => {
     try {
         const {firstName, lastName, email, password, passwordConfirm} = req.body;
 
@@ -34,8 +35,8 @@ userRouter.post('/register', async (req,res) => {
                 res.status(404).send({message: 'email already taken'});
             } else {
                 //encrypt the password
-                const salt = await bcrypt.genSalt(Number(process.env.SALT));
-                const passwordHash = await bcrypt.hash(password, salt);
+                const salt = bcrypt.genSaltSync(Number(process.env.SALT));
+                const passwordHash = bcrypt.hashSync(password, salt);
                 
                 //save a new user to database
                 const newUser = new User({
@@ -62,9 +63,9 @@ userRouter.post('/register', async (req,res) => {
         console.error(error)
         res.status(500).send();
     }
-});
+}));
 
-userRouter.post('/login', async (req, res) => {
+userRouter.post('/login', expressAsyncHandler(async (req, res) => {
     try {
         const {email, password} = req.body;
 
@@ -78,29 +79,28 @@ userRouter.post('/login', async (req, res) => {
         } else {
             const existingUser = await User.findOne({email});
 
-            if (!existingUser) 
-             return res.status(404).send({message: 'wrong email or password'});
-            
-             const passwordCorrect = await bcrypt.compare(password, existingUser.passwordHash);
-             if (!passwordCorrect) { 
-                return res.status(404).send({message: 'wrong email or password'});
-              } else {
-                res.send({_id:existingUser._id,
-                           firstName:existingUser.firstName,
-                           lastName: existingUser.lastName,
-                           email:existingUser.email,
-                           token:generateToken(existingUser)
-                         }
-                       )
-             }
-                   
+            if (existingUser) {
+                if (bcrypt.compareSync(password, existingUser.passwordHash)) {
+                    res.send({
+                        _id:existingUser._id,
+                        firstName:existingUser.firstName,
+                        lastName: existingUser.lastName,
+                        email:existingUser.email,
+                        token:generateToken(existingUser)
+                    })
+                    return;
+                }
+            }
+
+             res.status(404).send({message: 'wrong email or password'});
+                  
         }
         
     } catch (error) {
       console.error(error)
       res.status(500).send();  
     }
-});
+}));
 
 
 export default userRouter;
