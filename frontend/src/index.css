@@ -1,0 +1,54 @@
+html,body {
+  margin: 0px;
+  padding: 0px;
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+
+.sign-btn {
+  background-color: rgb(41, 155, 41);
+  color: white;
+  border-radius: 10px;
+  border: none;
+}
+
+.emailPage {
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+}
+
+.footer {
+  width: 100%;
+  background-color: rgb(53, 52, 52);
+  height: 300px;
+  position: relative;
+}
+
+.custom-shape-divider-top-1663958508 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  line-height: 0;
+}
+
+.custom-shape-divider-top-1663958508 svg {
+  position: relative;
+  display: block;
+  width: calc(262% + 1.3px);
+  height: 66px;
+}
+
+.custom-shape-divider-top-1663958508 .shape-fill {
+  fill: #FFFFFF;
+}
